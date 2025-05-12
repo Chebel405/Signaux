@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 interface Product {
     name: string;
     price: number;
+    lang: string[];
 
 }
 
@@ -27,6 +28,21 @@ interface Product {
             (ngModelChange)="quantity.set($event)"
             type="number"/>
     <hr />
+
+
+    <hr />
+    @if(this.selectedProduct()){
+    <select 
+        [ngModel]="selectedLang()"
+        (ngModelChange)="selectedLang.set($event)"
+    >
+        <option disabled [value]="null">Chose a language</option>
+        @for(lang of this.selectedProduct()?.lang; track $index){
+            <option [value]="lang">{{lang}}</option>
+        }
+    </select> 
+    <hr />
+    }
     <h1>Prix : {{price()}}</h1>
         `,
     styles: `
@@ -38,20 +54,20 @@ export class DymaComponent {
         {
             name: 'Cz Shadow 2',
             price: 1800,
+            lang: ['fr', 'en'],
         },
         {
             name: 'Glock 17',
             price: 600,
+            lang: ['es', 'en'],
         },
     ]);
     // Signal qui contient le produit actuellement selectionné ou null
     selectedProduct = signal<Product | null>(null);
+    selectedLang = linkedSignal(() => this.selectedProduct()?.lang[0]);
     quantity = linkedSignal({
         source: this.selectedProduct,
-        computation: (newProduct) => {
-            console.log(newProduct);
-            return 1;
-        }
+        computation: () => 1,
     });
     price = computed(
         () => (this.selectedProduct()?.price || 0) * this.quantity()
