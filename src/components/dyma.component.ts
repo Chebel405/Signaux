@@ -50,10 +50,17 @@ interface Product {
     <hr />
     @if(this.selectedProduct() && isCheapProduct()){
         <div>
-            <p style="color:gteen">Ce produit est un bon plan !</p>
+            <p style="color:green">Ce produit est un bon plan !</p>
         </div>
     }
+
     <hr />
+    <hr />
+    @if(this.selectedProduct() && isExpensiveProduct()){
+        <div>
+            <p style="color:red">Ce produit n'est pas un bon plan !</p>
+        </div>
+    }
 
 
 
@@ -95,6 +102,10 @@ export class DymaComponent {
     isCheapProduct = linkedSignal(() => {
         const product = this.selectedProduct();
         return product ? product.price < 600 : false;
+    })
+    isExpensiveProduct = linkedSignal(() => {
+        const product = this.selectedProduct();
+        return product ? product.price > 1000 : false;
     })
     selectedLang = linkedSignal(() => this.selectedProduct()?.lang[0]);
     quantity = linkedSignal({
