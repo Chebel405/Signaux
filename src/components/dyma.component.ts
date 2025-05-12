@@ -44,6 +44,19 @@ interface Product {
     <hr />
     }
     <h1>Prix : {{price()}}</h1>
+
+
+
+    <hr />
+    @if(this.selectedProduct() && isCheapProduct()){
+        <div>
+            <p style="color:gteen">Ce produit est un bon plan !</p>
+        </div>
+    }
+    <hr />
+
+
+
         `,
     styles: `
   `,
@@ -61,9 +74,28 @@ export class DymaComponent {
             price: 600,
             lang: ['es', 'en'],
         },
+        {
+            name: 'Glock 16',
+            price: 750,
+            lang: ['es', 'en'],
+        },
+        {
+            name: 'Glock 15',
+            price: 150,
+            lang: ['es', 'en'],
+        },
+        {
+            name: 'Glock 14',
+            price: 200,
+            lang: ['es', 'en'],
+        },
     ]);
     // Signal qui contient le produit actuellement selectionné ou null
     selectedProduct = signal<Product | null>(null);
+    isCheapProduct = linkedSignal(() => {
+        const product = this.selectedProduct();
+        return product ? product.price < 600 : false;
+    })
     selectedLang = linkedSignal(() => this.selectedProduct()?.lang[0]);
     quantity = linkedSignal({
         source: this.selectedProduct,
